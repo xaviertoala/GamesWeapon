@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arma vs Zombie · Ing. Xavier Toala</title>
+  <meta name="author" content="Ing. Xavier Toala">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="juego">
+    <header class="barra-superior">
+      <div class="marca"><span class="emblema" aria-hidden="true"></span><b>SECTOR <span>07</span></b><small>CAMPO DE TIRO</small></div>
+      <p class="firma">Hecho por: <strong>Ing. Xavier Toala</strong></p>
+    </header>
+
+    <div class="cabecera">
+      <div><p class="sobretitulo">OPERACIÓN / CONTENCIÓN ZOMBIE</p><h1>ARMA <span>VS</span> ZOMBIE</h1><p class="descripcion">Apunta al objetivo. Cada impacto cuenta.</p></div>
+      <div class="resumen"><b>02</b><span>NIVELES<br>DE AMENAZA</span></div>
+    </div>
+
+    <div class="niveles">
+      <section class="nivel">
+        <div class="encabezado-nivel"><div><span class="etiqueta">NIVEL 01 / NORMAL</span><h2>Zombi</h2><p class="dificultad">100 de vida <span>·</span> 3 impactos</p></div><span class="numero-nivel" aria-hidden="true">01</span></div>
+        <form autocomplete="off">
+          <input class="disparo" type="checkbox" id="disparo1" aria-label="Primer disparo">
+          <input class="disparo" type="checkbox" id="disparo2" aria-label="Segundo disparo">
+          <input class="disparo" type="checkbox" id="disparo3" aria-label="Tercer disparo">
+    
+          <div class="contenido">
+            <div class="marcador">
+              <div class="puntuacion"><span class="dato">PUNTUACIÓN</span><b><span class="e0">0</span><span class="e1">100</span><span class="e2">200</span><span class="e3">800</span></b></div>
+              <div class="salud"><span class="dato">VIDA DEL OBJETIVO</span><b><span class="e0">100</span><span class="e1">66</span><span class="e2">33</span><span class="e3">0</span> <small>/ 100</small></b></div>
+            </div>
+    
+            <div class="barra" aria-hidden="true"><div class="vida"></div></div>
+    
+            <div class="escena visor">
+              <div class="suelo" aria-hidden="true"></div>
+              <div class="datos-visor" aria-hidden="true"><span>RANGO A / 01</span><span class="estado-objetivo"><i></i><span class="activo">EN LA MIRA</span><span class="baja">ELIMINADO</span></span></div>
+              <model-viewer
+                src="Model/scene-v1.glb"
+                alt="Zombi de Plants vs. Zombies en 3D"
+                camera-controls
+                auto-rotate
+                autoplay
+                animation-name="Caminar"
+                shadow-intensity="1"
+                loading="eager">
+              </model-viewer>
+    
+              <label class="tiro tiro1" for="disparo1" aria-label="Disparar al zombi"></label>
+              <label class="tiro tiro2" for="disparo2" aria-label="Disparar de nuevo al zombi"></label>
+              <label class="tiro tiro3" for="disparo3" aria-label="Último disparo al zombi"></label>
+              <span class="dano dano1" aria-hidden="true">-34</span>
+              <span class="dano dano2" aria-hidden="true">-33</span>
+              <span class="dano dano3" aria-hidden="true">-33</span>
+              <div class="arma" aria-hidden="true"><span class="canon"></span><span class="cuerpo-arma"></span><span class="cargador"></span><span class="guante"></span></div>
+              <span class="mira" aria-hidden="true"><i></i></span>
+              <div class="pie-visor" aria-hidden="true"><span>SECTOR ALFA</span><span>CLIC / TOQUE <b>DISPARAR</b></span></div>
+            </div>
+    
+            <div class="resultado"><p class="ganaste" role="status">✓ OBJETIVO NEUTRALIZADO <span>+500 PTS</span></p></div>
+            <button type="reset"><span aria-hidden="true">↻</span> REINICIAR NIVEL 1</button>
+          </div>
+        </form>
+      </section>
+      <section class="nivel avanzado">
+        <div class="encabezado-nivel"><div><span class="etiqueta">NIVEL 02 / AVANZADO</span><h2>Gargantuar</h2><p class="dificultad">180 de vida <span>·</span> 6 impactos</p></div><span class="numero-nivel" aria-hidden="true">02</span></div>
+        <form autocomplete="off">
+          <input class="disparo" type="checkbox" id="jefe1" aria-label="Gargantuar: disparo 1 de 6">
+          <input class="disparo" type="checkbox" id="jefe2" aria-label="Gargantuar: disparo 2 de 6">
+          <input class="disparo" type="checkbox" id="jefe3" aria-label="Gargantuar: disparo 3 de 6">
+          <input class="disparo" type="checkbox" id="jefe4" aria-label="Gargantuar: disparo 4 de 6">
+          <input class="disparo" type="checkbox" id="jefe5" aria-label="Gargantuar: disparo 5 de 6">
+          <input class="disparo" type="checkbox" id="jefe6" aria-label="Gargantuar: disparo 6 de 6">
+
+          <div class="contenido">
+            <div class="marcador">
+              <div class="puntuacion"><span class="dato">PUNTUACIÓN</span><b><span class="e0">0</span><span class="e1">100</span><span class="e2">200</span><span class="e3">300</span><span class="e4">400</span><span class="e5">500</span><span class="e6">1600</span></b></div>
+              <div class="salud"><span class="dato">VIDA DEL OBJETIVO</span><b><span class="e0">180</span><span class="e1">150</span><span class="e2">120</span><span class="e3">90</span><span class="e4">60</span><span class="e5">30</span><span class="e6">0</span> <small>/ 180</small></b></div>
+            </div>
+            <div class="barra" aria-hidden="true"><div class="vida"></div></div>
+
+            <div class="escena visor">
+              <div class="suelo" aria-hidden="true"></div>
+              <div class="datos-visor" aria-hidden="true"><span>RANGO B / 02</span><span class="estado-objetivo"><i></i><span class="activo">EN LA MIRA</span><span class="baja">ELIMINADO</span></span></div>
+              <model-viewer
+                src="Model/gargantuar_-_pvz_garden_warfare.glb"
+                alt="Gargantuar de Plants vs. Zombies en 3D, nivel avanzado"
+                camera-controls
+                auto-rotate
+                shadow-intensity="1"
+                loading="eager">
+              </model-viewer>
+              <label class="tiro tiro1" for="jefe1" aria-label="Disparar a Gargantuar: impacto 1 de 6"></label>
+              <label class="tiro tiro2" for="jefe2" aria-label="Disparar a Gargantuar: impacto 2 de 6"></label>
+              <label class="tiro tiro3" for="jefe3" aria-label="Disparar a Gargantuar: impacto 3 de 6"></label>
+              <label class="tiro tiro4" for="jefe4" aria-label="Disparar a Gargantuar: impacto 4 de 6"></label>
+              <label class="tiro tiro5" for="jefe5" aria-label="Disparar a Gargantuar: impacto 5 de 6"></label>
+              <label class="tiro tiro6" for="jefe6" aria-label="Disparar a Gargantuar: impacto 6 de 6"></label>
+              <span class="dano dano1" aria-hidden="true">-30</span>
+              <span class="dano dano2" aria-hidden="true">-30</span>
+              <span class="dano dano3" aria-hidden="true">-30</span>
+              <span class="dano dano4" aria-hidden="true">-30</span>
+              <span class="dano dano5" aria-hidden="true">-30</span>
+              <span class="dano dano6" aria-hidden="true">-30</span>
+              <div class="arma" aria-hidden="true"><span class="canon"></span><span class="cuerpo-arma"></span><span class="cargador"></span><span class="guante"></span></div>
+              <span class="mira" aria-hidden="true"><i></i></span>
+              <div class="pie-visor" aria-hidden="true"><span>SECTOR BRAVO</span><span>CLIC / TOQUE <b>DISPARAR</b></span></div>
+            </div>
+
+            <div class="resultado"><p class="ganaste" role="status">✓ GARGANTUAR NEUTRALIZADO <span>+1000 PTS</span></p></div>
+            <button type="reset"><span aria-hidden="true">↻</span> REINICIAR NIVEL 2</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <footer class="pie-juego"><span>⌖ ENTRENAMIENTO DE PUNTERÍA</span><span>APUNTA · DISPARA · REPITE</span></footer>
+  </main>
+
+  <!-- Modelos de Nazar Okruzhko (https://sketchfab.com/Hot-Dog_1947), CC BY 4.0.
+       Gargantuar: https://sketchfab.com/3d-models/gargantuar-pvz-garden-warfare-158324cbf041447c9911268e7d742802
+       Se adaptaron sus materiales para el visor; se conservaron mallas y texturas. -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
+</body>
+</html>

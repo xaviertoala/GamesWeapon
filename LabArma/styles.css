@@ -1,177 +1,366 @@
-
-h1 {
-  text-decoration: underline;
+/* Interfaz del juego: HTML y CSS; el visor 3D conserva su importación. */
+:root {
+  color-scheme: dark;
+  --fondo: #0e1412;
+  --texto: #e9eee5;
+  --suave: #8d9c8c;
+  --linea: #354239;
+  --mono: ui-monospace, Consolas, monospace;
 }
+
+* { box-sizing: border-box; }
 
 body {
-  background-color: #088a93;
-  color: #f1f5f9;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;
-  cursor: crosshair;
+  color: var(--texto);
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse at 14% 0%, #5064431c, transparent 48%),
+    radial-gradient(ellipse at 95% 90%, #6a483215, transparent 50%),
+    var(--fondo);
 }
 
-/* Cabecera para la clase */
-header {
-  width: 100%;
-  text-align: center;
-  padding: 16px 12px;
-  background: linear-gradient(180deg, #2e5696, #0b0f19);
-  border-bottom: 2px solid #c37113;
-}
+.juego { width: 100%; max-width: 1250px; margin: auto; padding: 0 32px; }
 
-h1 {
-  font-size: 1.6rem;
-  color: #f83838;
-  margin-bottom: 4px;
-}
-
-p.subtitle {
-  font-size: 0.9rem;
-  color: #94a3b8;
-}
-
-/* Tablero de estadísticas (Marcador) */
-.hud {
-  display: flex;
-  gap: 20px;
-  margin: 15px 0;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.hud-card {
-  background: rgba(30, 41, 59, 0.85);
-  border: 1px solid #475569;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-size: 0.95rem;
+.barra-superior {
+  min-height: 78px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #344335;
 }
 
-.hud-card span.value {
-  font-weight: bold;
-  color: #38bdf8;
-  font-size: 1.2rem;
-}
+.marca { display: flex; align-items: center; gap: 13px; }
+.marca b { font-size: 17px; letter-spacing: 1px; }
+.marca b span { color: #c7ee8a; }
+.marca small { border-left: 1px solid #526044; padding-left: 13px; color: #8d9f84; font: 8px var(--mono); letter-spacing: 1.4px; }
+.emblema { position: relative; display: block; height: 27px; width: 27px; border: 1px solid #bad88d; border-radius: 50%; }
+.emblema::before, .emblema::after { content: ''; position: absolute; background: #bad88d; }
+.emblema::before { width: 35px; height: 1px; left: -5px; top: 12px; }
+.emblema::after { height: 35px; width: 1px; top: -5px; left: 12px; }
+.firma { color: #8d9c87; font-size: 11px; margin: 0; }
+.firma strong { color: #e3ebd9; font-weight: 600; margin-left: 6px; }
 
-/* Barra de vida del objeto 3D */
-.health-container {
-  width: 90%;
-  max-width: 450px;
-  margin-bottom: 15px;
-}
+.cabecera { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 32px 0 28px; }
+.sobretitulo { font: 9px var(--mono); letter-spacing: 2px; color: #b7d395; margin: 0 0 13px; }
+h1 { font: 400 clamp(36px, 4.7vw, 63px)/1 Impact, 'Arial Narrow', sans-serif; letter-spacing: .4px; margin: 0; }
+h1 span { color: #9bb67b; font-size: .53em; vertical-align: middle; padding: 0 3px; }
+.descripcion { color: #94a48c; margin: 13px 0 0; font-size: 12px; }
+.resumen { display: flex; align-items: center; gap: 14px; border-left: 1px solid #485842; padding-left: 25px; margin-right: 4px; }
+.resumen b { font: 43px Impact, 'Arial Narrow', sans-serif; color: #809970; }
+.resumen span { font: 8px/1.8 var(--mono); letter-spacing: 1.4px; color: #91a385; }
 
-.health-bar-bg {
-  width: 100%;
-  height: 18px;
-  background: #1e293b;
-  border-radius: 9px;
-  overflow: hidden;
-  border: 2px solid #475569;
+.niveles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.nivel {
+  --acento: #c2eb87;
+  --borde: #53694a;
   position: relative;
-}
-
-.health-bar-fill {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
-  transition: width 0.15s ease-out;
-}
-
-/* Contenedor del Visor 3D */
-.viewer-box {
-  position: relative;
-  width: 90%;
-  max-width: 580px;
-  height: 440px;
-  background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
-  border-radius: 16px;
-  border: 2px solid #38bdf8;
-  box-shadow: 0 0 25px rgba(3, 19, 26, 0.25);
-  overflow: hidden;
-}
-
-/* La etiqueta <model-viewer> con el objeto en 3D */
-model-viewer {
-  width: 100%;
-  height: 100%;
-}
-
-/* Capa de disparo sobre el visor 3D */
-.target-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  cursor: crosshair;
-  z-index: 10;
-}
-
-/* Efecto de sacudida cuando recibe un disparo */
-.shake {
-  animation: shakeAnim 0.2s ease-in-out;
-}
-
-@keyframes shakeAnim {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(-6px, 4px) rotate(-1deg); }
-  50% { transform: translate(6px, -4px) rotate(1deg); }
-  75% { transform: translate(-3px, -2px); }
-}
-
-
-/* Texto de daño flotante */
-.damage-text {
-  position: absolute;
-  font-weight: 900;
-  font-size: 1.3rem;
-  color: #ef4444;
-  text-shadow: 0 0 8px #000;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  animation: floatUp 0.6s ease-out forwards;
-  z-index: 20;
-}
-
-@keyframes fadeOut {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
-}
-
-@keyframes floatUp {
-  0% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
-  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-40px); }
-}
-
-/* Botones de control */
-.controls {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-button {
-  background: #0284c7;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  min-width: 0;
+  padding: 23px;
+  border: 1px solid #3b4c3f;
   border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
+  background: linear-gradient(140deg, #202b22, #141d18 70%);
+  box-shadow: 0 14px 28px #0003, inset 0 1px #e8ffd00d;
+}
+.nivel::before { content: ''; position: absolute; left: 0; top: -1px; width: 85px; height: 3px; background: var(--acento); border-radius: 4px 0 0; }
+.avanzado { --acento: #efb879; --borde: #806044; border-color: #574939; background: linear-gradient(140deg, #2d2820, #1b1c17 70%); }
+.encabezado-nivel { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding-bottom: 18px; border-bottom: 1px solid #8da37b24; }
+.etiqueta { font: 8px var(--mono); letter-spacing: 1.6px; color: var(--acento); }
+h2 { margin: 9px 0 7px; font: 400 32px Impact, 'Arial Narrow', sans-serif; letter-spacing: .6px; }
+.dificultad { color: #a4b199; font-size: 11px; margin: 0; }
+.dificultad span { color: var(--acento); margin: 0 6px; }
+.numero-nivel { font: 61px Impact, 'Arial Narrow', sans-serif; line-height: 1; letter-spacing: -2px; color: #b3d38a19; }
+.avanzado .numero-nivel { color: #f4c28b19; }
+
+.marcador { display: flex; align-items: end; justify-content: space-between; gap: 12px; padding: 17px 0 12px; }
+.dato { display: block; color: #8f9e87; font: 7px var(--mono); letter-spacing: 1.4px; margin-bottom: 7px; }
+.puntuacion b { font: 25px var(--mono); font-weight: 400; letter-spacing: 1px; color: #e8efdf; }
+.salud { text-align: right; }
+.salud b { font: 17px var(--mono); color: var(--acento); font-weight: 400; }
+.salud b small { font-size: 10px; color: #86997c; }
+.barra { position: relative; height: 7px; overflow: hidden; background: #090e0b; border-radius: 2px; box-shadow: 0 0 0 1px #6b815238; }
+.barra::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 26px, #0b160da8 27px 29px); pointer-events: none; }
+.vida { width: 100%; height: 100%; background: linear-gradient(90deg, #6fa45e, #c2eb87); box-shadow: 0 0 12px #b9f97e33; transition: width .3s ease, background .3s ease; }
+
+.escena {
+  position: relative;
+  isolation: isolate;
+  height: clamp(330px, 42vh, 425px);
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #4f6142;
+  border-radius: 3px;
+  background:
+    radial-gradient(ellipse at 50% 22%, #c9e6b126, transparent 57%),
+    repeating-linear-gradient(90deg, #0000 0 96px, #0b160d66 97px 100px, #b2c39b0a 101px 102px),
+    linear-gradient(180deg, #26362a, #40533a 62%, #263528 63%, #152419);
+}
+.avanzado .escena { border-color: #725c42; background: radial-gradient(ellipse at 50% 20%, #ffd7a62b, transparent 55%), repeating-linear-gradient(90deg, #0000 0 96px, #170e0766 97px 100px, #e4c8a80a 101px 102px), linear-gradient(180deg, #372e23, #5a4b37 62%, #382e20 63%, #241e14); }
+.escena::before { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: repeating-linear-gradient(0deg, transparent 0 3px, #00000005 4px), radial-gradient(ellipse, transparent 35%, #030a0773); box-shadow: inset 0 0 50px #06100870; }
+.escena::after { content: ''; position: absolute; left: 12px; right: 12px; top: 44px; height: 1px; background: #c6e7a915; z-index: 2; pointer-events: none; }
+.suelo { position: absolute; z-index: 0; left: -40%; right: -40%; height: 43%; bottom: -5%; transform: perspective(240px) rotateX(48deg); transform-origin: 50% 100%; border-top: 1px solid #adc49026; background: linear-gradient(0deg, #101c14aa, transparent), repeating-linear-gradient(0deg, transparent 0 47px, #c1d4a318 48px 49px), repeating-linear-gradient(90deg, transparent 0 47px, #c1d4a318 48px 49px), #243528; box-shadow: 0 -10px 35px #ccdba60a; pointer-events: none; }
+.avanzado .suelo { filter: sepia(.5); }
+model-viewer { position: relative; z-index: 1; width: 100%; height: 100%; background: transparent; --poster-color: transparent; }
+.datos-visor { position: absolute; top: 15px; left: 15px; right: 15px; z-index: 3; display: flex; justify-content: space-between; gap: 12px; color: #b5c2a6; font: 7px var(--mono); letter-spacing: 1px; pointer-events: none; }
+.estado-objetivo { color: var(--acento); }
+.estado-objetivo i { display: inline-block; height: 4px; width: 4px; background: var(--acento); border-radius: 50%; margin: 0 6px 1px 0; box-shadow: 0 0 7px var(--acento); }
+.baja { display: none; }
+.pie-visor { position: absolute; bottom: 13px; left: 15px; right: 15px; z-index: 3; display: flex; justify-content: space-between; gap: 10px; color: #a8b79a; font: 6px var(--mono); letter-spacing: 1px; pointer-events: none; }
+.pie-visor b { font-weight: 400; color: #dcebc9; margin-left: 5px; }
+.mira { position: absolute; left: 50%; top: 48%; z-index: 5; width: 38px; height: 38px; transform: translate(-50%, -50%); border: 1px solid #d4f6ac55; border-radius: 50%; opacity: .55; pointer-events: none; transition: opacity .15s; }
+.mira::before, .mira::after { content: ''; position: absolute; background: var(--acento); }
+.mira::before { height: 1px; width: 50px; top: 18px; left: -7px; }
+.mira::after { width: 1px; height: 50px; left: 18px; top: -7px; }
+.mira i { position: absolute; inset: 16px; background: var(--acento); border-radius: 50%; }
+.escena:hover .mira { opacity: .95; }
+.tiro { position: absolute; z-index: 4; inset: 8% 22% 5%; border-radius: 45%; cursor: crosshair; }
+.avanzado .tiro { inset: 5% 14% 5%; }
+.tiro:active { background: radial-gradient(circle at center, #fff8ad23, transparent 25%); }
+
+.resultado { display: grid; align-items: center; min-height: 42px; }
+.ganaste { color: var(--acento); font: 8px/1.6 var(--mono); letter-spacing: .5px; margin: 9px 0; }
+.ganaste span { float: right; color: #f0f8df; }
+button { width: 100%; display: flex; justify-content: center; align-items: center; gap: 9px; border: 1px solid var(--borde); border-radius: 3px; padding: 13px 16px; background: #1c2b1d; color: var(--acento); font: 700 9px var(--mono); letter-spacing: 1px; cursor: pointer; box-shadow: inset 0 1px #d2edac0a; transition: background .15s, color .15s, border-color .15s; }
+button span { font-size: 19px; line-height: 1; }
+button:hover { color: #11200e; background: var(--acento); border-color: var(--acento); }
+.avanzado button { background: #2c251a; }
+.avanzado button:hover { background: var(--acento); }
+button:focus-visible { outline: 2px solid var(--acento); outline-offset: 4px; }
+.disparo { position: absolute; width: 1px; height: 1px; opacity: 0; clip-path: inset(50%); }
+
+.dano { position: absolute; top: 42%; left: 50%; z-index: 6; pointer-events: none; opacity: 0; color: #fff0ce; font: 400 38px Impact, 'Arial Narrow', sans-serif; letter-spacing: 1px; line-height: 1; text-shadow: 0 2px 2px #000, 0 0 12px #f0a149aa; transform: translate(-50%, -50%); }
+.dano::after { content: 'DAÑO'; display: block; text-align: center; font: 7px var(--mono); letter-spacing: 2px; color: #ffc49a; margin-top: 5px; }
+.pie-juego { display: flex; justify-content: space-between; gap: 15px; padding: 23px 0; color: #667c60; font: 7px var(--mono); letter-spacing: 1.2px; }
+
+/* Los controles conservan la misma lógica de los dos niveles. */
+.e1, .e2, .e3, .e4, .e5, .e6,
+.tiro2, .tiro3, .tiro4, .tiro5, .tiro6, .ganaste,
+#disparo2, #disparo3, #jefe2, #jefe3, #jefe4, #jefe5, #jefe6 {
+  display: none;
 }
 
-button:hover {
-  background: #0369a1;
-  transform: scale(1.04);
+.disparo:checked {
+  display: none !important;
 }
+
+.disparo:focus-visible ~ .contenido .escena {
+  outline: 2px solid #baf16b;
+  outline-offset: 3px;
+}
+
+/* Primer impacto. */
+#disparo1:checked ~ #disparo2 { display: block; }
+#disparo1:checked ~ .contenido .e0 { display: none; }
+#disparo1:checked ~ .contenido .e1 { display: inline; }
+#disparo1:checked ~ .contenido .vida { width: 66%; background: #efd166; }
+#disparo1:checked ~ .contenido .tiro1 { display: none; }
+#disparo1:checked ~ .contenido .tiro2 { display: block; }
+
+/* Segundo impacto. */
+#disparo2:checked ~ #disparo3 { display: block; }
+#disparo2:checked ~ .contenido .e0,
+#disparo2:checked ~ .contenido .e1 { display: none; }
+#disparo2:checked ~ .contenido .e2 { display: inline; }
+#disparo2:checked ~ .contenido .vida { width: 33%; background: #ef785f; }
+#disparo2:checked ~ .contenido .tiro2 { display: none; }
+#disparo2:checked ~ .contenido .tiro3 { display: block; }
+
+/* Tercer impacto: termina la ronda. */
+#disparo3:checked ~ .contenido .e0,
+#disparo3:checked ~ .contenido .e1,
+#disparo3:checked ~ .contenido .e2 { display: none; }
+#disparo3:checked ~ .contenido .e3 { display: inline; }
+#disparo3:checked ~ .contenido .vida { width: 0; }
+#disparo3:checked ~ .contenido .tiro { display: none; }
+#disparo3:checked ~ .contenido .ganaste { display: block; }
+#disparo3:checked ~ .contenido model-viewer { opacity: 0.35; }
+
+
+/* Nivel avanzado: 30 puntos de daño por impacto, seis impactos en total. */
+
+/* Impacto 1 de Gargantuar. */
+#jefe1:checked ~ #jefe2 { display: block; }
+#jefe1:checked ~ .contenido .e0 { display: none; }
+#jefe1:checked ~ .contenido .e1 { display: inline; }
+#jefe1:checked ~ .contenido .vida { width: 83.3333%; background: #84d760; }
+#jefe1:checked ~ .contenido .tiro1 { display: none; }
+#jefe1:checked ~ .contenido .tiro2 { display: block; }
+
+/* Impacto 2 de Gargantuar. */
+#jefe2:checked ~ #jefe3 { display: block; }
+#jefe2:checked ~ .contenido .e0,
+#jefe2:checked ~ .contenido .e1 { display: none; }
+#jefe2:checked ~ .contenido .e2 { display: inline; }
+#jefe2:checked ~ .contenido .vida { width: 66.6667%; background: #84d760; }
+#jefe2:checked ~ .contenido .tiro2 { display: none; }
+#jefe2:checked ~ .contenido .tiro3 { display: block; }
+
+/* Impacto 3 de Gargantuar. */
+#jefe3:checked ~ #jefe4 { display: block; }
+#jefe3:checked ~ .contenido .e0,
+#jefe3:checked ~ .contenido .e1,
+#jefe3:checked ~ .contenido .e2 { display: none; }
+#jefe3:checked ~ .contenido .e3 { display: inline; }
+#jefe3:checked ~ .contenido .vida { width: 50%; background: #efd166; }
+#jefe3:checked ~ .contenido .tiro3 { display: none; }
+#jefe3:checked ~ .contenido .tiro4 { display: block; }
+
+/* Impacto 4 de Gargantuar. */
+#jefe4:checked ~ #jefe5 { display: block; }
+#jefe4:checked ~ .contenido .e0,
+#jefe4:checked ~ .contenido .e1,
+#jefe4:checked ~ .contenido .e2,
+#jefe4:checked ~ .contenido .e3 { display: none; }
+#jefe4:checked ~ .contenido .e4 { display: inline; }
+#jefe4:checked ~ .contenido .vida { width: 33.3333%; background: #efd166; }
+#jefe4:checked ~ .contenido .tiro4 { display: none; }
+#jefe4:checked ~ .contenido .tiro5 { display: block; }
+
+/* Impacto 5 de Gargantuar. */
+#jefe5:checked ~ #jefe6 { display: block; }
+#jefe5:checked ~ .contenido .e0,
+#jefe5:checked ~ .contenido .e1,
+#jefe5:checked ~ .contenido .e2,
+#jefe5:checked ~ .contenido .e3,
+#jefe5:checked ~ .contenido .e4 { display: none; }
+#jefe5:checked ~ .contenido .e5 { display: inline; }
+#jefe5:checked ~ .contenido .vida { width: 16.6667%; background: #ef785f; }
+#jefe5:checked ~ .contenido .tiro5 { display: none; }
+#jefe5:checked ~ .contenido .tiro6 { display: block; }
+
+/* Impacto 6 de Gargantuar. */
+#jefe6:checked ~ .contenido .e0,
+#jefe6:checked ~ .contenido .e1,
+#jefe6:checked ~ .contenido .e2,
+#jefe6:checked ~ .contenido .e3,
+#jefe6:checked ~ .contenido .e4,
+#jefe6:checked ~ .contenido .e5 { display: none; }
+#jefe6:checked ~ .contenido .e6 { display: inline; }
+#jefe6:checked ~ .contenido .vida { width: 0%; background: #ef785f; }
+#jefe6:checked ~ .contenido .tiro6 { display: none; }
+#jefe6:checked ~ .contenido .tiro { display: none; }
+#jefe6:checked ~ .contenido .ganaste { display: block; }
+#jefe6:checked ~ .contenido model-viewer { opacity: 0.35; }
+
+
+#disparo1:checked ~ .contenido .dano1,
+#jefe1:checked ~ .contenido .dano1 {
+  animation: mostrar-dano 1.1s ease-out forwards;
+}
+
+#disparo2:checked ~ .contenido .dano2,
+#jefe2:checked ~ .contenido .dano2 {
+  animation: mostrar-dano 1.1s ease-out forwards;
+}
+
+#disparo3:checked ~ .contenido .dano3,
+#jefe3:checked ~ .contenido .dano3 {
+  animation: mostrar-dano 1.1s ease-out forwards;
+}
+
+#jefe4:checked ~ .contenido .dano4 {
+  animation: mostrar-dano 1.1s ease-out forwards;
+}
+
+#jefe5:checked ~ .contenido .dano5 {
+  animation: mostrar-dano 1.1s ease-out forwards;
+}
+
+#jefe6:checked ~ .contenido .dano6 {
+  animation: mostrar-dano 1.1s ease-out forwards;
+}
+
+.dano2, .dano5 { left: 55%; }
+.dano3, .dano6 { left: 45%; }
+
+@keyframes mostrar-dano {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+  20% { opacity: 1; transform: translate(-50%, -80%) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -230%) scale(1); }
+}
+
+/* Si el usuario reduce el movimiento, el número solo se desvanece. */
+@media (prefers-reduced-motion: reduce) {
+  #disparo1:checked ~ .contenido .dano1,
+  #disparo2:checked ~ .contenido .dano2,
+  #disparo3:checked ~ .contenido .dano3,
+  #jefe1:checked ~ .contenido .dano1,
+  #jefe2:checked ~ .contenido .dano2,
+  #jefe3:checked ~ .contenido .dano3,
+  #jefe4:checked ~ .contenido .dano4,
+  #jefe5:checked ~ .contenido .dano5,
+  #jefe6:checked ~ .contenido .dano6 { animation-name: dano-suave; }
+}
+
+@keyframes dano-suave {
+  0%, 30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Aspecto de la tarjeta cuando se neutraliza un objetivo. */
+#disparo3:checked ~ .contenido .activo,
+#jefe6:checked ~ .contenido .activo { display: none; }
+#disparo3:checked ~ .contenido .baja,
+#jefe6:checked ~ .contenido .baja { display: inline; }
+#disparo3:checked ~ .contenido .mira,
+#jefe6:checked ~ .contenido .mira { opacity: 0; }
+
+@media (max-width: 900px) {
+  .juego { padding: 0 22px; }
+  .nivel { padding: 19px; }
+  .niveles { gap: 18px; }
+  .marca small { display: none; }
+}
+
+@media (max-width: 720px) {
+  .juego { max-width: 580px; padding: 0 18px; }
+  .niveles { grid-template-columns: 1fr; gap: 22px; }
+  .barra-superior { min-height: 70px; gap: 15px; }
+  .marca b { font-size: 14px; }
+  .emblema { width: 23px; height: 23px; }
+  .emblema::before { top: 10px; width: 31px; }
+  .emblema::after { left: 10px; height: 31px; }
+  .firma { text-align: right; font-size: 9px; }
+  .firma strong { display: block; margin: 5px 0 0; font-size: 11px; }
+  .cabecera { padding: 27px 0 24px; }
+  .sobretitulo { font-size: 7px; letter-spacing: 1.2px; }
+  h1 { font-size: clamp(34px, 8vw, 46px); }
+  .descripcion { font-size: 11px; }
+  .resumen { display: none; }
+  .escena { height: 400px; }
+  .pie-juego { font-size: 6px; letter-spacing: .5px; }
+}
+
+@media (max-width: 390px) {
+  .juego { padding: 0 13px; }
+  .nivel { padding: 16px; }
+  .escena { height: 360px; }
+  h1 { font-size: 34px; }
+  .puntuacion b { font-size: 23px; }
+  .salud b { font-size: 15px; }
+  .datos-visor { font-size: 6px; left: 11px; right: 11px; }
+  .pie-visor { left: 11px; right: 11px; font-size: 5px; }
+  .ganaste { font-size: 7px; letter-spacing: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vida, button, .mira { transition: none; }
+}
+
+/* Silueta del arma en primer plano, dibujada solo con CSS. */
+.arma { position: absolute; z-index: 3; right: 8%; bottom: 28px; width: 100px; height: 140px; transform: rotate(-23deg); transform-origin: 70% 100%; filter: drop-shadow(4px 7px 4px #0008); pointer-events: none; }
+.canon { position: absolute; left: 38px; top: 2px; width: 19px; height: 75px; background: linear-gradient(90deg, #101613, #536055 40%, #24302a 63%, #101612); border: 2px solid #111b14; border-radius: 3px 3px 0 0; }
+.canon::before { content: ''; position: absolute; top: -8px; left: 4px; width: 7px; height: 13px; border: 2px solid #0f1610; border-bottom: 0; }
+.canon::after { content: ''; position: absolute; bottom: 7px; left: -5px; width: 25px; height: 26px; border-radius: 2px; border: 1px solid #141c16; background: repeating-linear-gradient(0deg, #222f25 0 3px, #101b14 4px 5px); }
+.cuerpo-arma { position: absolute; left: 26px; top: 65px; width: 47px; height: 46px; background: linear-gradient(95deg, #18241b, #54624f 15%, #34422f 55%, #17221a 90%); clip-path: polygon(12% 0, 83% 0, 100% 28%, 100% 85%, 71% 100%, 0 86%, 0 20%); border-top: 2px solid #6a775e; }
+.cuerpo-arma::after { content: ''; position: absolute; top: 6px; left: 10px; width: 25px; height: 4px; background: #0f1911; box-shadow: 0 9px #18251a, 0 18px #18251a; }
+.cargador { position: absolute; width: 22px; height: 40px; left: 34px; top: 104px; transform: rotate(9deg); border: 1px solid #111a12; background: repeating-linear-gradient(90deg, #253421 0 5px, #182517 6px 8px); border-radius: 0 0 4px 4px; }
+.guante { position: absolute; top: 108px; left: 53px; width: 50px; height: 38px; border: 1px solid #1e2c1b; border-radius: 12px 5px 0 0; transform: rotate(-9deg); background: linear-gradient(110deg, #5f6b46, #384a2a 45%, #283a23); box-shadow: inset 0 7px 8px #9eab6233; }
+.arma::before { content: ''; position: absolute; top: -20px; left: 26px; width: 42px; height: 42px; opacity: 0; background: #fff1a9; clip-path: polygon(50% 0, 58% 29%, 88% 13%, 70% 43%, 100% 50%, 71% 58%, 87% 86%, 58% 71%, 50% 100%, 41% 69%, 12% 85%, 29% 57%, 0 50%, 31% 40%, 13% 13%, 42% 30%); }
+.tiro:active ~ .arma { transform: rotate(-23deg) translate(2px, 4px); }
+.tiro:active ~ .arma::before { opacity: 1; }
+.firma strong { font-size: 12px; }
+@media (max-width: 390px) { .arma { right: 3%; transform: rotate(-23deg) scale(.85); } }
+@media (prefers-reduced-motion: reduce) { .tiro:active ~ .arma { transform: rotate(-23deg); } }
